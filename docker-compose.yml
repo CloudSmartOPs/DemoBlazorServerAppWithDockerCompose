@@ -16,7 +16,7 @@ services:
       - demoblazorapp
   demoblazorserverapp:
     container_name: demo-blazor-app
-    image: ${DOCKER_REGISTRY-}demoblazorserverapp
+    image: codingdroplets/demoblazorserverapp
     build:
       context: .
       dockerfile: ./DemoBlazorServerApp/Dockerfile
