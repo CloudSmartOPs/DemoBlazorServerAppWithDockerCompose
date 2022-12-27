@@ -19,7 +19,7 @@ services:
     image: ${DOCKER_REGISTRY-}demoblazorserverapp
     build:
       context: .
-      dockerfile: DemoBlazorServerApp/Dockerfile
+      dockerfile: ./DemoBlazorServerApp/Dockerfile
     ports:
       - 8001:80
     depends_on:
