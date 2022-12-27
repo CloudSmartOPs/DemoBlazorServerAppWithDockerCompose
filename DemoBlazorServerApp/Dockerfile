@@ -1,24 +1,27 @@
-#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 EXPOSE 80
+ENV DB_HOST=demoappdb
+ENV DB_NAME=DemoBlazorApp
+ENV DB_SA_PASSWORD=password@12345#
+ 
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /src
-COPY ["./DemoBlazorServerApp.csproj", "DemoBlazorServerApp/"]
-RUN dotnet restore "DemoBlazorServerApp/DemoBlazorServerApp.csproj"
+WORKDIR /app
+COPY ["DemoBlazorServerApp.csproj", "."]
+RUN dotnet restore "DemoBlazorServerApp.csproj"
 COPY . .
-WORKDIR "/src/DemoBlazorServerApp"
-RUN dotnet build "DemoBlazorServerApp.csproj" -c Release -o /app/build
+RUN ls
+RUN dotnet build "DemoBlazorServerApp.csproj"
+
+ 
 
 FROM build AS publish
 RUN dotnet publish "DemoBlazorServerApp.csproj" -c Release -o /app/publish
 
+ 
+
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENV DB_HOST=demoappdb
-ENV DB_NAME=DemoBlazorApp
-ENV DB_SA_PASSWORD=password@12345#
 ENTRYPOINT ["dotnet", "DemoBlazorServerApp.dll"]
