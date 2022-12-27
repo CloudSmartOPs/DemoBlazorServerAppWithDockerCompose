@@ -18,4 +18,7 @@ RUN dotnet publish "DemoBlazorServerApp.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+ENV DB_HOST=demoappdb
+ENV DB_NAME=DemoBlazorApp
+ENV DB_SA_PASSWORD=password@12345#
 ENTRYPOINT ["dotnet", "DemoBlazorServerApp.dll"]
