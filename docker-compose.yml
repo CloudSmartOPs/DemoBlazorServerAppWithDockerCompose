@@ -17,9 +17,6 @@ services:
   demoblazorserverapp:
     container_name: demo-blazor-app
     image: codingdroplets/demoblazorserverapp
-    build:
-      context: .
-      dockerfile: ./DemoBlazorServerApp/Dockerfile
     ports:
       - 8001:80
     depends_on:
