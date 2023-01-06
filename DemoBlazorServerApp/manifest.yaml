@@ -1,63 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: myapp-deployment
+  name: my-blazor-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: myapp
+      app: my-blazor-app
   template:
     metadata:
       labels:
-        app: myapp
+        app: my-blazor-app
     spec:
       containers:
-      - name: myapp
-        image: appimage.azurecr.io/cloudsmartops/demoblazorserverappwithdockercompose:latest
-        ports:
-        - containerPort: 80
-        env:
-        - name: ASPNETCORE_ENVIRONMENT
-          value: Development
-        - name: ConnectionStrings__MyDb
-          value: Server=tcp:mydb,1433;Data Source=demoappdb;Initial Catalog=DemoBlazorApp;User ID=myuser;Password=Password@12345#;MultipleActiveResultSets=false;Encrypt=True;TrustServerCertificate=False;Connection Timeout=60;
-      - name: mydb
-        image: mcr.microsoft.com/mssql/server:2019-latest
-        env:
-        - name: ACCEPT_EULA 
-          value: "Y"
-        - name: SA_PASSWORD
-          value: "Password@12345#"
-        ports:
-        - containerPort: 1433
-        volumeMounts:
-        - name: mydb-persistent-storage
-          mountPath: /var/opt/mssql
-      volumes:
-      - name: mydb-persistent-storage
-        persistentVolumeClaim:
-          claimName: mydb-pvc
+        - name: my-app
+          image: appimage.azurecr.io/cloudsmartops/demoblazorserverappwithdockercompose:latest
+          ports:
+            - containerPort: 80
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: myapp-service
+  name: my-blazor-app
 spec:
   selector:
-    app: myapp
-  ports:
-  - port: 80
-    protocol: TCP
+    app: my-app
   type: LoadBalancer
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mydb-pvc
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+
