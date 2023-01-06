@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: myapp
-        image: demoapp18.azurecr.io/cloudsmartops/demoblazorserverappwithdockercompose:latest
+        image: appimage.azurecr.io/cloudsmartops/demoblazorserverappwithdockercompose:latest
         ports:
         - containerPort: 80
         env:
