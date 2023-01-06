@@ -1,33 +1,88 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-blazor-app
+  name: my-web-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: my-blazor-app
+      app: my-web-app
   template:
     metadata:
       labels:
-        app: my-blazor-app
+        app: my-web-app
     spec:
       containers:
-        - name: my-app
-          image: appimage.azurecr.io/cloudsmartops/demoblazorserverappwithdockercompose:latest
-          ports:
-            - containerPort: 80
+      - name: my-web-app
+        image: appimage.azurecr.io/cloudsmartops/demoblazorserverappwithdockercompose:latest
+        env:
+        - name: DB_HOST
+          value: demoappdb
+        - name: DB_NAME
+          value: DemoBlazorApp
+        - name: DB_SA_PASSWORD
+          value: Yukon900
+        ports:
+        - containerPort: 80
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-blazor-app
+  name: my-web-app
 spec:
-  selector:
-    app: my-app
   type: LoadBalancer
+  selector:
+    app: my-web-app
   ports:
-    - port: 80
-      protocol: TCP
-      targetPort: 80
-
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mssql-data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mssql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mssql
+  template:
+    metadata:
+      labels:
+        app: mssql
+    spec:
+      containers:
+      - name: mssql
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: SA_PASSWORD
+          value: "Yukon900"
+        ports:
+        - containerPort: 1433
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mssql
+spec:
+  type: ClusterIP
+  selector:
+    app: mssql
+  ports:
+  - protocol: TCP
+    port: 1433
+    targetPort: 1433
