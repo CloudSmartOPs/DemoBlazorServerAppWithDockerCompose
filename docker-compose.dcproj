@@ -16,3 +16,9 @@
     <None Include=".dockerignore" />
   </ItemGroup>
 </Project>
+<PropertyGroup>
+  <EnvironmentName>Production</EnvironmentName>
+</PropertyGroup>
+<environmentVariables>
+    <environmentVariable name="ASPNETCORE_ENVIRONMENT" value="Production" />
+</environmentVariables>
